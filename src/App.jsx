@@ -1,13 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ToolBar from './components/ToolBar';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import AboutPage from './pages/AboutPage';
+import ErrorPage from './pages/ErrorPage';
+import { loadExistingLoginStatus } from './pages/RegisterPage';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <ToolBar />,
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, path: '', element: <HomePage /> },
+      { path: 'login', element: <LoginPage />, loader: loadExistingLoginStatus },
+      { path: 'register', element: <RegisterPage />, loader: loadExistingLoginStatus },
+      { path: 'about', element: <AboutPage /> },
+    ]
+  }
+])
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div>Hey i am the Vite+React App</div>
+    <RouterProvider router={router} />
   )
 }
 
