@@ -5,8 +5,18 @@ import { useNavigate, redirect } from 'react-router-dom';
 import useRefreshToken from '../hooks/useRefreshToken';
 import { useSelector, useDispatch } from 'react-redux';
 import { authActions } from '../store/features/authSlice';
-import {Flex, Box} from '@chakra-ui/react';
+import {
+    Card,
+    CardHeader,
+    CardBody,
+    CardFooter,
+    Flex,
+    Box,
+    Heading,
+    Text
+} from '@chakra-ui/react'
 import MeetButtonGroup from "../components/ui/MeetButtonGroup.jsx";
+import MeetCarousel from "../components/ui/MeetCarousel.jsx";
 
 const AppPage = () => {
     const navigate = useNavigate();
@@ -59,12 +69,50 @@ const AppPage = () => {
 
     return (
         <>
-            <Flex mx={'10px'} align={'center'} justifyContent={'space-between'}>
-                <Flex w={'40vw'} h={'90vh'} align={'center'}>
-                    <MeetButtonGroup/>
+            <Box background={"gray.100"}>
+            <Flex mx={'10px'} align={'center'} justifyContent={'space-evenly'} direction={{
+                base: 'column',
+                lg: 'row',
+            }}>
+
+                <Flex w={{
+                    base: '100vw',
+                    lg: '40vw',
+                }} h={{
+                    base: '300px',
+                    lg: '90vh',
+                }} justify={'center'} align={'center'}>
+                    <Card boxShadow={'xl'} size={'lg'}>
+                        <CardHeader>
+                            <Heading size='md' textAlign={'center'}>Create or Join a Meeting</Heading>
+                        </CardHeader>
+                        <CardBody>
+                            <MeetButtonGroup/>
+                        </CardBody>
+                    </Card>
                 </Flex>
-                <Flex w={'50vw'} align={'center'} justify={'center'} >Meet/Carousel Area</Flex>
+
+                <Flex w={{
+                    base: '100vw',
+                    lg: '600px',
+                }} h={{
+                    base: '55vh',
+                    lg: '90vh'
+                }} align={'center'} justify={'center'} >
+                    <Card boxShadow={'2xl'} size={'lg'}>
+                        <CardHeader>
+                            <Heading size='md' textAlign={'center'}>Steps to follow!</Heading>
+                        </CardHeader>
+                        <CardBody>
+                            <MeetCarousel/>
+                        </CardBody>
+                    </Card>
+                    {/*<MeetCarousel/>*/}
+                </Flex>
+
             </Flex>
+            </Box>
+
         </>
     )
 }

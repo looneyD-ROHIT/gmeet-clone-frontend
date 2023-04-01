@@ -10,19 +10,45 @@ import {
     MdKeyboard,
     MdOutlineVideoCall
 } from 'react-icons/md';
-const MeetButtonGroup = () => {
-    return (
-            <Flex gap='10px'>
+import {useState} from "react";
 
-                <Button w={'250px'}><span><MdOutlineVideoCall size={24}/></span>Create Meet</Button>
-                <InputGroup>
+const MeetButtonGroup = () => {
+    const [isFocussed, setIsFocused] = useState(false);
+    return (
+            <Flex gap='10px' direction={{
+                base: 'column',
+                lg: 'row',
+            }}>
+
+                <Button display={{
+                    base: 'flex',
+                    lg: 'none'
+                }}><span><MdOutlineVideoCall size={20}/></span>Create</Button>
+                <Button display={{
+                    base: 'none',
+                    lg: 'flex'
+                }} ><span><MdOutlineVideoCall size={24}/></span>Create</Button>
+                <InputGroup w={{
+                    base: '250px',
+                    lg: '180px'
+                }}>
                     <InputLeftElement
                         pointerEvents='none'
-                        children={<MdKeyboard color='gray.300' />}
+                        children={<MdKeyboard size={24} color='gray.300' />}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
                     />
-                    <Input type='text' placeholder='Enter Code' />
+                    <Input type='text' placeholder='Enter Meet Code'
+                           onFocus={() => setIsFocused(true)}
+                           onBlur={() => setIsFocused(false)}/>
                 </InputGroup>
-                <Button>Join</Button>
+                {
+                    isFocussed && <Button w={{
+                        base: 'full',
+                        lg: '100px',
+                    }}>Join &nbsp; 🚀</Button>
+                }
+
             </Flex>
     );
 }
