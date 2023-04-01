@@ -26,6 +26,8 @@ import ProfileMenu from './ProfileMenu';
 
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import {useEffect, useState} from "react";
+
 
 
 const NAV_ITEMS = [
@@ -207,9 +209,33 @@ const MobileNavItem = ({ label, children, href }) => {
     );
 };
 
+function formatAMPMTime(date=new Date()) {
+    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    let strTime = hours + ':' + minutes + ' ' + ampm;
+    strTime += ' | ' + days[date.getDay()] + ', '+months[date.getMonth()] + ' ' + date.getDate();
+    return strTime;
+}
+
 export default function NavBar() {
     const { isOpen, onToggle } = useDisclosure();
     const authInfo = useSelector(state => state.auth);
+    const [currentTime, setCurrentTime] = useState('');
+    useEffect(()=>{
+        const id = setInterval(()=>{
+            setCurrentTime(formatAMPMTime(new Date()));
+        }, 60000)
+        return () => {
+            console.log('CLEANUP!!! from time setter');
+            clearInterval(id);
+        }
+    }, [])
 
 
     return (
@@ -277,6 +303,9 @@ export default function NavBar() {
                         align={'center'}
                         direction={'row'}
                         spacing={6}>
+                        {
+                            <Button as={Box}>{currentTime}</Button>
+                        }
                         {
                             authInfo.id ?
                                 ''
