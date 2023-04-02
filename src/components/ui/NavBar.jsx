@@ -226,7 +226,7 @@ function formatAMPMTime(date=new Date()) {
 export default function NavBar() {
     const { isOpen, onToggle } = useDisclosure();
     const authInfo = useSelector(state => state.auth);
-    const [currentTime, setCurrentTime] = useState('');
+    const [currentTime, setCurrentTime] = useState(formatAMPMTime(new Date()));
     useEffect(()=>{
         const id = setInterval(()=>{
             setCurrentTime(formatAMPMTime(new Date()));
