@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { useState, useReducer } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { Form, Formik } from 'Formik';
+import { Form, Formik } from 'formik';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { axiosPrivate } from '../../api/axios';
 import { NavLink, useNavigate } from 'react-router-dom';
