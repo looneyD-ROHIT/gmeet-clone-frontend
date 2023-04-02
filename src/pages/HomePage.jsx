@@ -42,12 +42,6 @@ export const Blob = (props) => {
 const HomePage = () => {
     const authInfo = useSelector(state => state.auth);
     const navigate = useNavigate();
-    const goToAppHandler = (e) => {
-        e.preventDefault();
-        // not recommended way of redirecting, but i am using it because, i need to remove and
-        // then refresh the access tokens
-        window.location.href = '/app';
-    }
     return (
         <>
             <main>
