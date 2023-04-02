@@ -12,6 +12,8 @@ import {
     createIcon,
     useColorModeValue,
 } from '@chakra-ui/react';
+import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 const PlayIcon = createIcon({
     displayName: 'PlayIcon',
     viewBox: '0 0 58 58',
@@ -38,6 +40,8 @@ export const Blob = (props) => {
 };
 
 const HomePage = () => {
+    const authInfo = useSelector(state => state.auth);
+    const navigate = useNavigate();
     const goToAppHandler = (e) => {
         e.preventDefault();
         // not recommended way of redirecting, but i am using it because, i need to remove and
@@ -94,7 +98,7 @@ const HomePage = () => {
                                     colorScheme={'blue'}
                                     bg={'blue.400'}
                                     _hover={{ bg: 'blue.500' }}
-                                    onClick={goToAppHandler}
+                                    onClick={authInfo.id ? ()=>{window.location.href = '/app'} : ()=> {navigate('/login')}}
                                 >
                                     Go to Dashboard
                                 </Button>
