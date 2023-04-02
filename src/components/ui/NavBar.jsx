@@ -304,7 +304,10 @@ export default function NavBar() {
                         direction={'row'}
                         spacing={6}>
                         {
-                            <Button as={Box}>{currentTime}</Button>
+                            <Button display={{
+                                base: 'none',
+                                sm: 'flex'
+                            }} as={Box}>{currentTime}</Button>
                         }
                         {
                             authInfo.id ?
