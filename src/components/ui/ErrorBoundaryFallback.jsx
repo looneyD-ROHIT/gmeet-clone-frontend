@@ -3,7 +3,6 @@ const ErrorBoundaryFallback = ({ error }) => {
         e.preventDefault();
         window.location.href = '/';
     }
-
     return (
         <div role="alert">
             <p>Something went wrong:</p>
