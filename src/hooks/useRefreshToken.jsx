@@ -1,5 +1,5 @@
-import axios from '../api/axios';
-import { axiosPrivate } from '../api/axios';
+import axios from '../api/axios.jsx';
+import { axiosPrivate } from '../api/axios.jsx';
 // import useAuth from './useAuth';
 import { authActions } from '../store/features/authSlice';
 import { useSelector, useDispatch } from 'react-redux';

@@ -1,7 +1,7 @@
 import { redirect } from 'react-router-dom';
 import store from '../store/indexSlice.jsx';
 import { authActions } from '../store/features/authSlice.jsx';
-import { axiosPrivate } from '../api/axios.js';
+import { axiosPrivate } from '../api/axios.jsx';
 
 const loadExistingLoginStatus = async ({ request, params }) => {
     try {

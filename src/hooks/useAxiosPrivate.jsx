@@ -1,4 +1,4 @@
-import { axiosPrivate } from "../api/axios";
+import { axiosPrivate } from "../api/axios.jsx";
 import { useCallback, useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import { useSelector, useDispatch } from 'react-redux';

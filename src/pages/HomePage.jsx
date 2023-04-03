@@ -12,8 +12,8 @@ import {
     createIcon,
     useColorModeValue,
 } from '@chakra-ui/react';
-import {useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const PlayIcon = createIcon({
     displayName: 'PlayIcon',
     viewBox: '0 0 58 58',
@@ -92,7 +92,7 @@ const HomePage = () => {
                                     colorScheme={'blue'}
                                     bg={'blue.400'}
                                     _hover={{ bg: 'blue.500' }}
-                                    onClick={authInfo.id ? ()=>{window.location.href = '/app'} : ()=> {navigate('/login')}}
+                                    onClick={authInfo.id ? () => { window.location.href = '/app' } : () => { navigate('/login') }}
                                 >
                                     Go to Dashboard
                                 </Button>

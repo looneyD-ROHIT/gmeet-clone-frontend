@@ -14,6 +14,12 @@ import {useState} from "react";
 
 const MeetButtonGroup = () => {
     const [isFocussed, setIsFocused] = useState(false);
+    const [meetCode, setMeetCode] = useState('');
+    const codeAreaChangeHandler = (e) => {
+        e.preventDefault();
+        const code = e.target.value.trim();
+        setMeetCode(code);
+    }
     return (
             <Flex gap='10px' direction={{
                 base: 'column',
@@ -40,10 +46,12 @@ const MeetButtonGroup = () => {
                     />
                     <Input type='text' placeholder='Enter Meet Code'
                            onFocus={() => setIsFocused(true)}
-                           onBlur={() => setIsFocused(false)}/>
+                           onBlur={() => setIsFocused(false)}
+                           onChange={codeAreaChangeHandler}
+                    />
                 </InputGroup>
                 {
-                    isFocussed && <Button w={{
+                    ( (isFocussed  && !meetCode) || meetCode) && <Button w={{
                         base: 'full',
                         lg: '100px',
                     }}>Join &nbsp; 🚀</Button>

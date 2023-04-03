@@ -9,6 +9,8 @@ import AboutPage from './pages/AboutPage';
 import Fallback from './pages/Fallback';
 import ErrorPage from './pages/ErrorPage';
 import loadExistingLoginStatus from './Utils/loadExistingLoginStatus';
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorBoundaryFallback from './components/ui/ErrorBoundaryFallback';
 
 const router = createBrowserRouter([
   {
@@ -32,7 +34,11 @@ const router = createBrowserRouter([
 function App() {
 
   return (
-    <RouterProvider router={router} />
+    <ErrorBoundary
+      FallbackComponent={ErrorBoundaryFallback}
+    >
+      <RouterProvider router={router} />
+    </ErrorBoundary>
   )
 }
 
