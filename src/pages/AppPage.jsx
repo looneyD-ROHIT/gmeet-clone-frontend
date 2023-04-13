@@ -1,11 +1,11 @@
-import React, {useEffect, useCallback, useState} from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { axiosPrivate as axiosPrivateRefresher } from '../api/axios.jsx';
 import { useNavigate, redirect } from 'react-router-dom';
 import useRefreshToken from '../hooks/useRefreshToken';
 import { useSelector, useDispatch } from 'react-redux';
 import { authActions } from '../store/features/authSlice';
-import {io} from "socket.io-client";
+import { io } from "socket.io-client";
 import {
     Card,
     CardHeader,
@@ -28,19 +28,6 @@ const AppPage = () => {
     const dispatch = useDispatch();
     const [isMeetValid, setIsMeetValid] = useState(false);
 
-    // establishing a socket io connection as soon as the page loads
-    useEffect(()=>{
-        console.log(import.meta.env.VITE_BACKEND_URL);
-        const socket = io(`${import.meta.env.VITE_BACKEND_URL}`);
-        socket.on("connect", () => {
-            console.log("Connected to server");
-        });
-        socket.on("disconnect", () => {
-            console.log("Disconnected from server");
-        });
-        socket.emit('message', 'helloworld!!!')
-        console.log(socket)
-    }, [])
 
     // useEffect to refresh tokens even if user is sitting idle (10mins)
     useEffect(() => {
@@ -52,13 +39,14 @@ const AppPage = () => {
             } catch (err) {
                 console.error('Error occured in setInterval: ' + err);
             }
-        }, 10  * 60 * 1000);
+        }, 10 * 60 * 1000);
 
         return () => {
             clearInterval(id);
         }
     }, [])
 
+    // useEffect for initial validation
     useEffect(() => {
         const initialValidation = async () => {
             try {
@@ -75,62 +63,59 @@ const AppPage = () => {
         }
     }, [])
 
-    // const clickHandler = useCallback(async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const response = await axiosPrivateRefresher.post('/app');
-    //     } catch (err) {
-    //         console.error(err);
-    //     }
-    // }, []);
+
+    const onClickHandler = (e) => {
+        e.preventDefault();
+        setIsMeetValid(prev => !prev);
+    }
 
     return (
         <>
             <Box background={"gray.100"}>
                 {
                     isMeetValid ?
-                    <MeetWindow/>
-                    :
-                    <Flex mx={'10px'} align={'center'} justifyContent={'space-evenly'} direction={{
-                        base: 'column',
-                        lg: 'row',
-                    }}>
+                        <MeetWindow onClick={onClickHandler} />
+                        :
+                        <Flex mx={'10px'} align={'center'} justifyContent={'space-evenly'} direction={{
+                            base: 'column',
+                            lg: 'row',
+                        }}>
 
-                        <Flex w={{
-                            base: '100vw',
-                            lg: '40vw',
-                        }} h={{
-                            base: '300px',
-                            lg: '90vh',
-                        }} justify={'center'} align={'center'}>
-                            <Card boxShadow={'xl'} size={'lg'}>
-                                <CardHeader>
-                                    <Heading size='md' textAlign={'center'}>Create or Join a Meeting</Heading>
-                                </CardHeader>
-                                <CardBody>
-                                    <MeetButtonGroup/>
-                                </CardBody>
-                            </Card>
+                            <Flex w={{
+                                base: '100vw',
+                                lg: '40vw',
+                            }} h={{
+                                base: '300px',
+                                lg: '90vh',
+                            }} justify={'center'} align={'center'}>
+                                <Card boxShadow={'xl'} size={'lg'}>
+                                    <CardHeader>
+                                        <Heading size='md' textAlign={'center'}>Create or Join a Meeting</Heading>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <MeetButtonGroup onClick={onClickHandler} />
+                                    </CardBody>
+                                </Card>
+                            </Flex>
+
+                            <Flex w={{
+                                base: '100vw',
+                                lg: '600px',
+                            }} h={{
+                                base: '55vh',
+                                lg: '90vh'
+                            }} align={'center'} justify={'center'} >
+                                <Card boxShadow={'2xl'} size={'lg'}>
+                                    <CardHeader>
+                                        <Heading size='md' textAlign={'center'}>Steps to follow!</Heading>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <MeetCarousel />
+                                    </CardBody>
+                                </Card>
+                            </Flex>
+
                         </Flex>
-
-                        <Flex w={{
-                            base: '100vw',
-                            lg: '600px',
-                        }} h={{
-                            base: '55vh',
-                            lg: '90vh'
-                        }} align={'center'} justify={'center'} >
-                            <Card boxShadow={'2xl'} size={'lg'}>
-                                <CardHeader>
-                                    <Heading size='md' textAlign={'center'}>Steps to follow!</Heading>
-                                </CardHeader>
-                                <CardBody>
-                                    <MeetCarousel/>
-                                </CardBody>
-                            </Card>
-                        </Flex>
-
-                    </Flex>
                 }
             </Box>
 

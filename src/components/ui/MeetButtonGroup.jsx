@@ -10,9 +10,9 @@ import {
     MdKeyboard,
     MdOutlineVideoCall
 } from 'react-icons/md';
-import {useState} from "react";
+import { useState } from "react";
 
-const MeetButtonGroup = () => {
+const MeetButtonGroup = (props) => {
     const [isFocussed, setIsFocused] = useState(false);
     const [meetCode, setMeetCode] = useState('');
     const codeAreaChangeHandler = (e) => {
@@ -21,43 +21,43 @@ const MeetButtonGroup = () => {
         setMeetCode(code);
     }
     return (
-            <Flex gap='10px' direction={{
-                base: 'column',
-                lg: 'row',
+        <Flex gap='10px' direction={{
+            base: 'column',
+            lg: 'row',
+        }}>
+
+            <Button display={{
+                base: 'flex',
+                lg: 'none'
+            }}><span><MdOutlineVideoCall size={20} /></span>Create</Button>
+            <Button display={{
+                base: 'none',
+                lg: 'flex'
+            }} ><span><MdOutlineVideoCall size={24} /></span>Create</Button>
+            <InputGroup w={{
+                base: '250px',
+                lg: '180px'
             }}>
+                <InputLeftElement
+                    pointerEvents='none'
+                    children={<MdKeyboard size={24} color='gray.300' />}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                />
+                <Input type='text' placeholder='Enter Meet Code'
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    onChange={codeAreaChangeHandler}
+                />
+            </InputGroup>
+            {
+                ((isFocussed && !meetCode) || meetCode) && <Button onClick={props.onClick} w={{
+                    base: 'full',
+                    lg: '100px',
+                }}>Join &nbsp; 🚀</Button>
+            }
 
-                <Button display={{
-                    base: 'flex',
-                    lg: 'none'
-                }}><span><MdOutlineVideoCall size={20}/></span>Create</Button>
-                <Button display={{
-                    base: 'none',
-                    lg: 'flex'
-                }} ><span><MdOutlineVideoCall size={24}/></span>Create</Button>
-                <InputGroup w={{
-                    base: '250px',
-                    lg: '180px'
-                }}>
-                    <InputLeftElement
-                        pointerEvents='none'
-                        children={<MdKeyboard size={24} color='gray.300' />}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
-                    />
-                    <Input type='text' placeholder='Enter Meet Code'
-                           onFocus={() => setIsFocused(true)}
-                           onBlur={() => setIsFocused(false)}
-                           onChange={codeAreaChangeHandler}
-                    />
-                </InputGroup>
-                {
-                    ( (isFocussed  && !meetCode) || meetCode) && <Button w={{
-                        base: 'full',
-                        lg: '100px',
-                    }}>Join &nbsp; 🚀</Button>
-                }
-
-            </Flex>
+        </Flex>
     );
 }
 export default MeetButtonGroup;

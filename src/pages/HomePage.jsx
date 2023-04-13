@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 const PlayIcon = createIcon({
     displayName: 'PlayIcon',
     viewBox: '0 0 58 58',
