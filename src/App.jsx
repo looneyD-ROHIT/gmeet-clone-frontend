@@ -21,8 +21,8 @@ const router = createBrowserRouter([
       { path: '', element: <HomePage /> },
       { path: 'login', element: <LoginPage />, loader: loadExistingLoginStatus },
       { path: 'register', element: <RegisterPage />, loader: loadExistingLoginStatus },
-      { path: 'app/:id?', element: <AppPage /> },
-      { path: 'app/:id/:meetid', element: <AppChatPage /> },
+      { path: 'app/', element: <AppPage /> },
+      { path: 'app/:meetcode', element: <AppChatPage /> },
       { path: 'about', element: <AboutPage /> },
     ]
   },

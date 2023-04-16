@@ -26,25 +26,25 @@ const AppPage = () => {
     const axiosPrivate = useAxiosPrivate();
     const authData = useSelector(state => state.auth);
     const dispatch = useDispatch();
-    const [isMeetValid, setIsMeetValid] = useState(false);
+    const [currentMeetId, setCurrentMeetId] = useState(null);
 
 
     // useEffect to refresh tokens even if user is sitting idle (10mins)
-    useEffect(() => {
-        const id = setInterval(async () => {
-            // refreshing the tokens even if user is idle for even 10mins
-            try {
-                // console.log('haga')
-                const response = await axiosPrivate.get('/ping');
-            } catch (err) {
-                console.error('Error occured in setInterval: ' + err);
-            }
-        }, 10 * 60 * 1000);
+    // useEffect(() => {
+    //     const id = setInterval(async () => {
+    //         // refreshing the tokens even if user is idle for even 10mins
+    //         try {
+    //             // console.log('haga')
+    //             const response = await axiosPrivate.get('/ping');
+    //         } catch (err) {
+    //             console.error('Error occured in setInterval: ' + err);
+    //         }
+    //     }, 10 * 60 * 1000);
 
-        return () => {
-            clearInterval(id);
-        }
-    }, [])
+    //     return () => {
+    //         clearInterval(id);
+    //     }
+    // }, [])
 
     // useEffect for initial validation
     useEffect(() => {
@@ -63,59 +63,76 @@ const AppPage = () => {
         }
     }, [])
 
-
-    const onClickHandler = (e) => {
+    const createMeetHandler = async (e) => {
         e.preventDefault();
-        setIsMeetValid(prev => !prev);
+        // console.log(authData.id);
+        try {
+
+            const response = await axiosPrivate.post('/app/create', {
+                id: authData.id
+            })
+            // console.log(response.data.message);
+            setCurrentMeetId(response.data.message.length > 0 ? response.data.message : null);
+            navigate(`/app/${response.data.message}`, { from: '/app' });
+        } catch (err) {
+            console.error('createMeet: ' + err);
+        }
+    }
+
+    const joinMeetHandler = (e) => {
+        e.preventDefault();
+        navigate(`/app/${currentMeetId}`, { from: '/app' });
     }
 
     return (
         <>
             <Box background={"gray.100"}>
                 {
-                    isMeetValid ?
-                        <MeetWindow onClick={onClickHandler} />
-                        :
-                        <Flex mx={'10px'} align={'center'} justifyContent={'space-evenly'} direction={{
-                            base: 'column',
-                            lg: 'row',
-                        }}>
+                    <Flex mx={'10px'} align={'center'} justifyContent={'space-evenly'} direction={{
+                        base: 'column',
+                        lg: 'row',
+                    }}>
 
-                            <Flex w={{
-                                base: '100vw',
-                                lg: '40vw',
-                            }} h={{
-                                base: '300px',
-                                lg: '90vh',
-                            }} justify={'center'} align={'center'}>
-                                <Card boxShadow={'xl'} size={'lg'}>
-                                    <CardHeader>
-                                        <Heading size='md' textAlign={'center'}>Create or Join a Meeting</Heading>
-                                    </CardHeader>
-                                    <CardBody>
-                                        <MeetButtonGroup onClick={onClickHandler} />
-                                    </CardBody>
-                                </Card>
-                            </Flex>
-
-                            <Flex w={{
-                                base: '100vw',
-                                lg: '600px',
-                            }} h={{
-                                base: '55vh',
-                                lg: '90vh'
-                            }} align={'center'} justify={'center'} >
-                                <Card boxShadow={'2xl'} size={'lg'}>
-                                    <CardHeader>
-                                        <Heading size='md' textAlign={'center'}>Steps to follow!</Heading>
-                                    </CardHeader>
-                                    <CardBody>
-                                        <MeetCarousel />
-                                    </CardBody>
-                                </Card>
-                            </Flex>
-
+                        <Flex w={{
+                            base: '100vw',
+                            lg: '40vw',
+                        }} h={{
+                            base: '300px',
+                            lg: '90vh',
+                        }} justify={'center'} align={'center'}>
+                            <Card boxShadow={'xl'} size={'lg'}>
+                                <CardHeader>
+                                    <Heading size='md' textAlign={'center'}>Create or Join a Meeting</Heading>
+                                </CardHeader>
+                                <CardBody>
+                                    <MeetButtonGroup
+                                        onCreate={createMeetHandler}
+                                        onJoin={joinMeetHandler}
+                                        currentMeetId={currentMeetId}
+                                        setCurrentMeetId={setCurrentMeetId}
+                                    />
+                                </CardBody>
+                            </Card>
                         </Flex>
+
+                        <Flex w={{
+                            base: '100vw',
+                            lg: '600px',
+                        }} h={{
+                            base: '55vh',
+                            lg: '90vh'
+                        }} align={'center'} justify={'center'} >
+                            <Card boxShadow={'2xl'} size={'lg'}>
+                                <CardHeader>
+                                    <Heading size='md' textAlign={'center'}>Steps to follow!</Heading>
+                                </CardHeader>
+                                <CardBody>
+                                    <MeetCarousel />
+                                </CardBody>
+                            </Card>
+                        </Flex>
+
+                    </Flex>
                 }
             </Box>
 

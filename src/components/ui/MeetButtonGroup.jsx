@@ -19,6 +19,15 @@ const MeetButtonGroup = (props) => {
         e.preventDefault();
         const code = e.target.value.trim();
         setMeetCode(code);
+        props.setCurrentMeetId(code);
+    }
+    const subJoinHandler = (e) => {
+        e.preventDefault();
+        if(meetCode.length == 0){
+            // display a toast to enter valid meet id
+            return;
+        }
+        props.onJoin(e);
     }
     return (
         <Flex gap='10px' direction={{
@@ -29,11 +38,15 @@ const MeetButtonGroup = (props) => {
             <Button display={{
                 base: 'flex',
                 lg: 'none'
-            }}><span><MdOutlineVideoCall size={20} /></span>Create</Button>
+            }}
+            onClick={props.onCreate}
+            ><span><MdOutlineVideoCall size={20} /></span>Create</Button>
             <Button display={{
                 base: 'none',
                 lg: 'flex'
-            }} ><span><MdOutlineVideoCall size={24} /></span>Create</Button>
+            }}
+            onClick={props.onCreate}
+            ><span><MdOutlineVideoCall size={24} /></span>Create</Button>
             <InputGroup w={{
                 base: '250px',
                 lg: '180px'
@@ -51,7 +64,7 @@ const MeetButtonGroup = (props) => {
                 />
             </InputGroup>
             {
-                ((isFocussed && !meetCode) || meetCode) && <Button onClick={props.onClick} w={{
+                ((isFocussed && !meetCode) || meetCode) && <Button onClick={subJoinHandler} w={{
                     base: 'full',
                     lg: '100px',
                 }}>Join &nbsp; 🚀</Button>

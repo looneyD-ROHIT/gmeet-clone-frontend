@@ -11,11 +11,11 @@ const authSlice = createSlice({
     reducers: {
         changeAuthData(state, action) {
             if (action?.payload?.id) {
-                console.log('changing id: '+ action.payload.id);
+                // console.log('changing id: '+ action.payload.id);
                 state.id = action.payload.id
             }
             if (action?.payload?.accessToken) {
-                console.log('changing accessToken: '+ action.payload.accessToken);
+                // console.log('changing accessToken: '+ action.payload.accessToken);
                 state.accessToken = action.payload.accessToken
             }
         }

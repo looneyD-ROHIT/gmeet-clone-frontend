@@ -16,7 +16,7 @@ const useAxiosPrivate = () => {
     // const location = useLocation();
     const navigate = useNavigate();
     const toast = useToast();
-    console.log(authenticationData);
+    // console.log(authenticationData);
 
     useEffect(() => {
 

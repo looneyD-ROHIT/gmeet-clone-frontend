@@ -1,7 +1,11 @@
 import { io } from "socket.io-client";
 
 const socket = io('http://localhost:9000', {
-    withCredentials: true
+    withCredentials: true,
+    reconnection: true,
+    autoConnect: false,
+    timeout: 60000
 })
+
 
 export default socket;
