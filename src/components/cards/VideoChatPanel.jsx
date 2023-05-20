@@ -3,29 +3,7 @@ import { useEffect, useRef, useState, useReducer } from "react";
 import { MdMic, MdMicOff, MdVideocam, MdVideocamOff } from "react-icons/md";
 import VideoPlayer from './VideoPlayer';
 import socket from '../../config/socketConfig'
-import peer from "../../config/peerjsConfig";
 import { useParams } from 'react-router-dom';
-
-const initialPeersState = {}
-const peersReducer = (state, action) => {
-    // console.log(state, action);
-    switch (action.type) {
-        case 'ADD':
-            // console.log("ADD");
-            return {
-                ...state,
-                [action.payload.peerId]: {
-                    stream: action.payload.stream
-                }
-            }
-        case 'REMOVE':
-            // console.log("REMOVE");
-            const { [action.payload.peerId]: deleted, ...rest } = state;
-            return { ...rest };
-        default:
-            return initialPeersState;
-    }
-}
 
 const VideoChatPanel = (props) => {
     const params = useParams();
@@ -44,8 +22,6 @@ const VideoChatPanel = (props) => {
     const [micStatus, setMicStatus] = useState(false);
     const [camStatus, setCamStatus] = useState(true);
     const [joinStatus, setJoinStatus] = useState(false);
-    const [currentPeer, setCurrentPeer] = useState(null);
-    const [peersStream, dispatchPeersStream] = useReducer(peersReducer, initialPeersState);
     const micOnOffHandler = (e) => {
         e.preventDefault();
         setMicStatus(prev => !prev);
@@ -56,7 +32,7 @@ const VideoChatPanel = (props) => {
     }
 
     const joinStatusHandler = (e) => {
-        setJoinStatus(prev => !prev);
+        setJoinStatus(true);
     }
 
     // listen to changes in resize
@@ -132,15 +108,6 @@ const VideoChatPanel = (props) => {
         }
     }, [localStream]);
 
-    // useEffect to set up peer connection
-    // useEffect(() => {
-    //     me?.on("open", () => {
-    //         console.log('joining meet')
-    //         socket?.emit('join-meet', validMeetCode, me._id);
-    //         console.log('joined meet')
-    //     });
-    // }, [me, validMeetCode])
-
     useEffect(() => {
         // console.log('localStream not activated');
         if (localStream != null && joinStatus) {
@@ -164,43 +131,8 @@ const VideoChatPanel = (props) => {
 
         })
 
-        // whenever call is received
-        peer.on("call", (call) => {
-            // console.log(call);
-            // console.log(localStream);
-            console.log('answering')
-            call.answer(localStream);
-            call.on("stream", (userVideoStream) => {
-                console.log('on call')
-                // console.log(userVideoStream);
-                dispatchPeersStream({
-                    type: 'ADD', payload: {
-                        peerId: call['peer'],
-                        stream: userVideoStream
-                    }
-                })
-            });
-
-        });
-
         socket.on('joined-meet', (peerId) => {
             console.log("joined-meet: ", peerId);
-            // console.log(peer);
-            // console.log(localStream);
-            console.log('calling')
-            const call = localStream && peer.call(peerId, localStream);
-            // console.log(call);
-            // const call = localStream && me?.call(peerId, localStream);
-            call?.on("stream", (userVideoStream) => {
-                console.log('on answer')
-                // console.log(userVideoStream)
-                dispatchPeersStream({
-                    type: 'ADD', payload: {
-                        peerId: peerId,
-                        stream: userVideoStream
-                    }
-                })
-            });
         })
 
         // when i join as a user, i fetch the user list and call them
@@ -208,19 +140,6 @@ const VideoChatPanel = (props) => {
             console.log(meetUsersList);
             const filteredList = meetUsersList.filter(id => id != peer._id);
             console.log(filteredList);
-            // filteredList.forEach(peerId => {
-            //     const call = localStream && peer.call(peerId, localStream);
-            //     console.log(call);
-            //     call?.on("stream", (userVideoStream) => {
-            //         console.log(userVideoStream);
-            //         dispatchPeersStream({
-            //             type: 'ADD', payload: {
-            //                 peerId: peerId,
-            //                 stream: userVideoStream
-            //             }
-            //         })
-            //     });
-            // })
         })
 
         socket.on('message', (data) => {
@@ -231,12 +150,6 @@ const VideoChatPanel = (props) => {
         // on some other user disconnect, remove that user
         socket.on('user-disconnected', (peerId) => {
             console.log('user-disconnected: ', peerId);
-            // console.log(peersStream);
-            dispatchPeersStream({
-                type: 'REMOVE', payload: {
-                    peerId: peerId
-                }
-            })
         })
 
 
@@ -341,23 +254,6 @@ const VideoChatPanel = (props) => {
                     gap={'10px'}
                 >
                     {
-                        peersStream ? Object.keys(peersStream).map(peerId => {
-                            // console.log(peerId);
-                            // console.log(peersStream[peerId]);
-                            return (
-                                <Box
-                                    key={peerId}
-                                    px='4px'
-                                    borderColor='black'
-                                    borderWidth='1px'
-                                    borderRadius='md'
-                                >
-                                    <VideoPlayer stream={peersStream[peerId].stream} />
-
-                                </Box>
-                            )
-                        })
-                            :
                             <p>No users to display</p>
                     }
                 </Flex>
