@@ -8,31 +8,45 @@ const participantsSlice = createSlice({
     name: 'participants',
     initialState,
     reducers: {
-        addParticipant(state, action){
-            if(action?.payload){
-                const oldMembers = state.members;
+        addParticipant(state, action) {
+            if (action?.payload) {
+                const oldMembers = [...state.members];
                 oldMembers.push(action.payload);
                 const newMembers = new Set(oldMembers);
-                state.members = Array.from(newMembers);
+                const t = Array.from(newMembers);
+                state.members = t.length > 0 ? t : [];
             }
         },
-        addParticipants(state, action){
-            if(action?.payload){
+        addParticipants(state, action) {
+            if (action?.payload) {
                 console.log(action.payload.filteredList);
-                state.members = action.payload.filteredList;
+                const newList = new Set(action.payload.filteredList);
+                const t = Array.from(newList);
+                state.members = [...newList];
             }
         },
-        updateParticipant(state, action){
-            if(action?.payload?.peerId){
-                for(let member of state.members){
-                    if(member.peerId === action.payload.peerId){
-                        member.stream = action.payload.stream;
+        updateParticipant(state, action) {
+            const oldMembers = [...state.members];
+            if (action?.payload?.peerId) {
+                for (let member of oldMembers) {
+                    if (member.peerId === action.payload.peerId) {
+                        if (action.payload.stream) {
+                            member.stream = action.payload.stream;
+                        }
+                        if (action.payload.audioStatus) {
+                            member.audioStatus = action.payload.audioStatus;
+                        }
+                        if (action.payload.videoStatus) {
+                            member.videoStatus = action.payload.videoStatus;
+                        }
+
                     }
                 }
             }
+            state.members = [...oldMembers];
         },
-        removeParticipant(state, action){
-            if(action?.payload){
+        removeParticipant(state, action) {
+            if (action?.payload) {
                 const filteredMembers = state.members.filter(member => member.peerId !== action.payload.peerId);
                 state.members = filteredMembers;
             }

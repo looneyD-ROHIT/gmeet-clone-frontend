@@ -94,8 +94,28 @@ const VideoChatPanel = (props) => {
         }
     }, [micStatus, camStatus, localStreamWidth, localStreamHeight])
 
+    const updateCall = useCallback(() => {
+        members.forEach(member => {
+            const peerId = member.peerId;
+            const call = localStream && peer.call(peerId, localStream);
+            call?.on("stream", (userVideoStream) => {
+                console.log(localStream);
+                console.log(userVideoStream);
+                dispatch(participantsActions.updateParticipant({
+                    peerId,
+                    meetcode: params.meetcode,
+                    stream: userVideoStream,
+                    audioStatus: userVideoStream.getAudioTracks().length > 0 ? true : false,
+                    videoStatus: userVideoStream.getVideoTracks().length > 0 ? true : false,
+                }))
+            });
+        })
+    }, [peer, localStream])
+
     // remove mic/cam tracks when not in use to improve performance
     useEffect(() => {
+        updateCall();
+
         if (!camStatus) {
             // console.log('cam disabled');
             // console.log(localStream?.getVideoTracks());
@@ -106,7 +126,7 @@ const VideoChatPanel = (props) => {
             // console.log(localStream?.getAudioTracks());
             localStream?.getAudioTracks()?.forEach(track => track.stop());
         }
-    }, [micStatus, camStatus])
+    }, [micStatus, camStatus, updateCall]);
 
     // get the stream with a custom aspect ratio
     useEffect(() => {
@@ -174,6 +194,8 @@ const VideoChatPanel = (props) => {
                 peerId: call.peer,
                 meetcode: params.meetcode,
                 stream: userVideoStream,
+                audioStatus: userVideoStream.getAudioTracks().length > 0 ? true : false,
+                videoStatus: userVideoStream.getVideoTracks().length > 0 ? true : false,
             }))
             console.log(localStream);
             console.log(userVideoStream);
@@ -210,7 +232,7 @@ const VideoChatPanel = (props) => {
         console.log("joined-meet: ", peerId);
         console.log('adding new member to state');
         console.log('added new member to state');
-        console.log('myseld: '+peer._id);
+        console.log('myseld: ' + peer._id);
         console.log('I\'m calling : ' + peerId);
         const call = localStream && peer.call(peerId, localStream);
         call?.on("stream", (userVideoStream) => {
@@ -221,6 +243,8 @@ const VideoChatPanel = (props) => {
                 peerId,
                 meetcode: params.meetcode,
                 stream: userVideoStream,
+                audioStatus: userVideoStream.getAudioTracks().length > 0 ? true : false,
+                videoStatus: userVideoStream.getVideoTracks().length > 0 ? true : false,
             }))
         });
     }, [peer, localStream]);
@@ -237,14 +261,16 @@ const VideoChatPanel = (props) => {
         // when i join as a user, i fetch the user list and call them
         socket.on('get-users', (meetUsersList) => {
             console.log(meetUsersList);
+            console.log(peer._id);
             const filteredList = meetUsersList.filter(id => id != peer._id).map(id => {
                 return {
                     peerId: id,
                     meetcode: params.meetcode,
+                    audioStatus: false,
+                    videoStatus: true,
                 }
             });
-            console.log(filteredList);
-            dispatch(participantsActions.addParticipants({filteredList}));
+            dispatch(participantsActions.addParticipants({ filteredList }));
         })
 
         socket.on('message', (data) => {
@@ -270,6 +296,7 @@ const VideoChatPanel = (props) => {
             socket?.off('joined-meet', handleJoinedMeet);
         }
     }, [handleSocketConnect, handleJoinedMeet]);
+
 
 
     return (
@@ -369,13 +396,13 @@ const VideoChatPanel = (props) => {
                 >
                     {
                         members.length > 0 ?
-                        members.map(member => {
-                            return (
-                                <VideoPlayer parent={remoteVideoParentRef} key={member.peerId} stream={member.stream}/>
-                            )
-                        })
-                        :
-                        <p>No users to display</p>
+                            members && members.map(member => {
+                                return (
+                                    <VideoPlayer parent={remoteVideoParentRef} key={member.peerId} stream={member.stream} audioStatus={member.audioStatus} videoStatus={member.videoStatus} />
+                                )
+                            })
+                            :
+                            <p>No users to display</p>
                     }
                 </Flex>
             </Flex>
